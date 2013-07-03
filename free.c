@@ -43,10 +43,10 @@ main(int argc, char *argv[])
 {
 	int c, vflag = 0, tflag = 0;
 	int factor = 1;
-	int physmem, realmem;
-	int vmactive, vminactive, vmfree, vmcache, vmpage, vmwire;
-	int memfree, memused;
-	int pagesize;
+	long int physmem, realmem;
+	long int vmactive, vminactive, vmfree, vmcache, vmpage, vmwire;
+	long int memfree, memused;
+	long int pagesize;
 
 	opterr = 0;
 
@@ -90,19 +90,19 @@ main(int argc, char *argv[])
 		exit(EXIT_SUCCESS);
 	}
 
-	physmem    = get_sysctl("hw.physmem");
-	realmem    = get_sysctl("hw.realmem");
-	pagesize   = get_sysctl("hw.pagesize");
+	physmem    = labs(get_sysctl("hw.physmem"));
+	realmem    = labs(get_sysctl("hw.realmem"));
+	pagesize   = labs(get_sysctl("hw.pagesize"));
 
-	vmpage     = get_sysctl("vm.stats.vm.v_page_count") * pagesize;
-	vmwire     = get_sysctl("vm.stats.vm.v_wire_count") * pagesize;
-	vmactive   = get_sysctl("vm.stats.vm.v_active_count") * pagesize;
-	vminactive = get_sysctl("vm.stats.vm.v_inactive_count") * pagesize;
-	vmcache    = get_sysctl("vm.stats.vm.v_cache_count") * pagesize;
-	vmfree     = get_sysctl("vm.stats.vm.v_free_count") * pagesize;
+	vmpage     = labs(get_sysctl("vm.stats.vm.v_page_count") * pagesize);
+	vmwire     = labs(get_sysctl("vm.stats.vm.v_wire_count") * pagesize);
+	vmactive   = labs(get_sysctl("vm.stats.vm.v_active_count") * pagesize);
+	vminactive = labs(get_sysctl("vm.stats.vm.v_inactive_count") * pagesize);
+	vmcache    = labs(get_sysctl("vm.stats.vm.v_cache_count") * pagesize);
+	vmfree     = labs(get_sysctl("vm.stats.vm.v_free_count") * pagesize);
 
 	printf("         %15s %15s %15s %15s %15s %15s\n", "total", "active", "free", "inactive", "wire", "cached");
-	printf("Memory:  %15d %15d %15d %15d %15d %15d\n",
+	printf("Memory:  %15ld %15ld %15ld %15ld %15ld %15ld\n",
 			realmem/factor,
 			vmactive/factor,
 			vmfree/factor,
@@ -117,7 +117,7 @@ main(int argc, char *argv[])
 		memfree = vminactive + vmfree + vmcache;
 		memused	= realmem - memfree;
 
-		printf("Summary: %15d %15d %15d\n",
+		printf("Summary: %15ld %15ld %15ld\n",
 				realmem/factor,
 				memused/factor,
 				memfree/factor);
